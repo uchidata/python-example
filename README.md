@@ -18,17 +18,22 @@ Install pip and python dependencies
 ```shell
 sudo apt-get install python-pip
 sudo pip install pandas
-sudo pip install json
 sudo pip install requests
 ```
 
 ### Download data
 ```shell
+cd python-example
 wget "https://s3-us-west-2.amazonaws.com/uchidata-demo/ag_news_test.csv"
 wget "https://s3-us-west-2.amazonaws.com/uchidata-demo/ag_news_train.csv"
 ```
 
 ### Reproduce Ag_news benchmark
+
+1. Add your API key and API url in the python script.
+
+2. Run python_example.py
+ 
 ```shell
 python python_example.py
 ```
