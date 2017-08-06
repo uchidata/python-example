@@ -1,99 +1,245 @@
-# Expected output
+# Uchidata starter kit
 
-## Reviews analysis
+Uchidata is a Natural Language Processing API for Text-Classification in real-time.
+
+Here we will see how to install Uchidata and dependencies, download data to reproduce ag_news benchmark, and a sample python code to send requests to the API.
+
+### Install
+
+Install git and clone repo
+
+```shell
+sudo apt-get install git
+git clone https://github.com/uchidata/python-example.git
+```
+
+Install pip and python dependencies
+
+```shell
+sudo apt-get install python-pip
+sudo pip install pandas
+sudo pip install json
+sudo pip install requests
+```
+
+### Download data
+```shell
+wget "https://s3-us-west-2.amazonaws.com/uchidata-demo/ag_news_test.csv"
+wget "https://s3-us-west-2.amazonaws.com/uchidata-demo/ag_news_train.csv"
+```
+
+### Reproduce Ag_news benchmark
+```shell
+python python_example.py
+```
+
+# API Functions
+
+### send_training_data
+Input
 
 ```json
-[
-  {
-    "id": "1", 
-    "result": {
-      "Dissatisfied": 0.148803, 
-      "Neutral": 0.148803, 
-      "Satisfied": 0.195268, 
-      "Very Dissatisfied": 0.148803, 
-      "Very Satisfied": 0.358324
-    }
-  }, 
-  {
-    "id": "2", 
-    "result": {
-      "Dissatisfied": 0.154892, 
-      "Neutral": 0.161961, 
-      "Satisfied": 0.188123, 
-      "Very Dissatisfied": 0.176571, 
-      "Very Satisfied": 0.318452
-    }
-  }
-]
+{
+  "api_key":"YOUR API KEY",
+  "function":"send_training_data",
+  "model":"MODEL NAME",
+  "data":[
+          {"y":"label1", "id":1, "var1":"VALUE OF VARIABLE 1", "var2":"VALUE OF VARIABLE 1", ...}, 
+          {"y":"label2", "id":2, "var1":"VALUE OF VARIABLE 1", "var2":"VALUE OF VARIABLE 1", ...}
+         ]
+}
 ```
-   
-## Sentiment analysis
+
+Output
 
 ```json
-[
-  {
-    "id": "1", 
-    "result": {
-      "negative": 0.340476, 
-      "positive": 0.659524
-    }
-  }, 
-  {
-    "id": "2", 
-    "result": {
-      "negative": 0.58219, 
-      "positive": 0.41781
-    }
-  }
-]
+{
+  "timestamp": "2017-08-06 00:54:51", 
+  "message": "Model 'MODEL NAME': n observations added in the training set (total:N observations)"
+}
 ```
- 
-## Topic extraction
+
+### learn_model
+Input
 
 ```json
-[
-  {
-    "id": "1", 
-    "result": {
-      "business": 0.167177, 
-      "entertainment": 0.176713, 
-      "politics": 0.180348, 
-      "sport": 0.294581, 
-      "tech": 0.181182
-    }
-  }, 
-  {
-    "id": "2", 
-    "result": {
-      "business": 0.183353, 
-      "entertainment": 0.199899, 
-      "politics": 0.160719, 
-      "sport": 0.20567, 
-      "tech": 0.250359
-    }
-  }
-]
+{
+  "api_key":"YOUR API KEY",
+  "function":"learn_model",
+  "model":"MODEL NAME"
+}
 ```
-   
-## Product classification
+
+Output
 
 ```json
-[
-  {
-    "id": "1", 
-    "result": {
-      "Agriculture and Food": 0.087799, 
-      "Electronics and Telecoms": 0.229841, 
-      "Health and Beauty": 0.084912, 
-      "Hobbies and Fun": 0.084912, 
-      "Home and Construction": 0.084912, 
-      "Industry": 0.084912, 
-      "Materials and Environment": 0.084912, 
-      "Mode and Accessories": 0.084912, 
-      "Packaging  Office and Equipment": 0.085473, 
-      "Vehicules and transportation": 0.087417
-    }
-  }
-]
+{
+  "timestamp": "2017-08-06 00:54:51", 
+  "message": "Model 'MODEL NAME' is training"
+}
 ```
+
+### check_status
+Input
+
+```json
+{
+  "api_key":"YOUR API KEY",
+  "function":"get_status",
+  "model":"MODEL NAME"
+}
+```
+
+Output
+
+```json
+{
+  "timestamp": "2017-08-06 00:54:51", 
+  "message": MODEL STATUS
+}
+```
+
+### load_model
+Input
+
+```json
+{
+  "api_key":"YOUR API KEY",
+  "function":"load_model",
+  "model":"MODEL NAME"
+}
+```
+
+Output
+
+```json
+{
+  "timestamp": "2017-08-06 00:54:51", 
+  "message":  "Model 'MODEL NAME' is in memory and ready to compute predictions"
+}
+```
+
+### predict
+Input
+
+```json
+{
+  "api_key":"YOUR API KEY",
+  "function":"predict",
+  "model":"MODEL NAME",
+  "n_predictions":n, # Output n predictions per observation
+  "data":[
+          {"id":1, "var1":"CONTENT OF VARIABLE 1", "var2":"CONTENT OF VARIABLE 1", ...}, 
+          {"id":2, "var1":"CONTENT OF VARIABLE 1", "var2":"CONTENT OF VARIABLE 1", ...}
+         ]
+}
+```
+
+Output: example with n_predictions = 3
+
+```json
+{
+  "timestamp": "2017-08-06 00:54:51", 
+  "message": "Predictions have been computed",
+  "result":
+    {
+      "model": "MODEL NAME",
+      "n": 3,
+      "output": 
+        [
+          {
+            "id": "1", 
+            "predictions": 
+              {
+                "top1": {"score": 0.7196, "label": "label3"},
+                "top2": {"score": 0.6721, "label": "label1"}, 
+                "top3": {"score": 0.2742, "label": "label2"}, 
+              }
+          }, 
+          {
+            "id":"2", 
+            "predictions": 
+              {
+                "top1": {"score": 0.6152, "label": "label3"}, 
+                "top2": {"score": 0.7817, "label": "label4"},
+                "top3": {"score": 0.1837, "label": "label1"}
+              }
+          }
+        ]
+    }
+}
+```
+
+### close_model
+Input
+
+```json
+{
+  "api_key":"YOUR API KEY",
+  "function":"close_model",
+  "model":"MODEL NAME"
+}
+```
+
+Output
+
+```json
+{
+  "timestamp": "2017-08-06 00:54:51", 
+  "message":  "Model 'MODEL NAME' is closed. Use method 'load_model' before computing new predictions."
+}
+```
+
+### analyze_predictions
+Input
+
+```json
+{
+  "api_key":"YOUR API KEY",
+  "function":"analyze_predictions",
+  "model":"MODEL NAME"
+}
+```
+
+Output
+
+```json
+{
+  "timestamp": "2017-08-06 00:54:51", 
+  "message":  "Statistics on predictions have been computed.",
+  "stats":
+    {
+      "n_total":12345, # Total number of predictions computed
+      "n_last_batch":123, # Number of predictions in the last batch
+      "last_batch": # Proportion of each label
+        {
+          "label1":0.567,
+          "label2":0.213,
+          "label3":0.123,
+          "label4":0.097
+        }
+    }
+}
+```
+
+### remove_model
+Input
+
+```json
+{
+  "api_key":"YOUR API KEY",
+  "function":"remove_model",
+  "model":"MODEL NAME"
+}
+```
+
+Output
+
+```json
+{
+  "timestamp": "2017-08-06 00:54:51", 
+  "message":  "Model 'MODEL NAME' removed."
+}
+```
+
 
