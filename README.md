@@ -49,8 +49,8 @@ Input
   "function":"send_training_data",
   "model":"MODEL NAME",
   "data":[
-          {"y":"label1", "id":1, "var1":"VALUE OF VARIABLE 1", "var2":"VALUE OF VARIABLE 1", ...}, 
-          {"y":"label2", "id":2, "var1":"VALUE OF VARIABLE 1", "var2":"VALUE OF VARIABLE 1", ...}
+          {"y":"label1", "id":1, "var1":"VALUE OF VARIABLE 1", "var2":"VALUE OF VARIABLE 2", ...}, 
+          {"y":"label2", "id":2, "var1":"VALUE OF VARIABLE 1", "var2":"VALUE OF VARIABLE 2", ...}
          ]
 }
 ```
@@ -134,8 +134,8 @@ Input
   "model":"MODEL NAME",
   "n_predictions":n, # Output n predictions per observation
   "data":[
-          {"id":1, "var1":"CONTENT OF VARIABLE 1", "var2":"CONTENT OF VARIABLE 1", ...}, 
-          {"id":2, "var1":"CONTENT OF VARIABLE 1", "var2":"CONTENT OF VARIABLE 1", ...}
+          {"id":1, "var1":"CONTENT OF VARIABLE 1", "var2":"CONTENT OF VARIABLE 2", ...}, 
+          {"id":2, "var1":"CONTENT OF VARIABLE 1", "var2":"CONTENT OF VARIABLE 2", ...}
          ]
 }
 ```
